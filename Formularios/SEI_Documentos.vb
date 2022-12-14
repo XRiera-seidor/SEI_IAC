@@ -1,0 +1,198 @@
+Imports SEI.SEI_IAC.SEI_AddOnEnum
+Imports SEI.SEI_IAC.SEI_AddOnEnum.enAddOnFormType
+Imports SAPbouiCOM.BoFormItemTypes
+Imports SAPbouiCOM.BoEventTypes
+Imports System.IO
+Imports System.Text
+Imports System.Enum
+Imports System.Collections
+Imports System.Net.Mail
+
+Public Class SEI_Documentos
+    Inherits SEI_Form
+    ''Dim _ParentAddon As SEI_Addon
+    ''Dim _oForm As SAPbouiCOM.Form
+    Dim iTopBotons As Integer
+    Dim sUIDBoto As String
+    Dim sLineNum_Sel As String
+
+    Public Sub New(ByRef ParentAddon As SEI_Addon, ByVal FormUID As String)
+
+        MyBase.New(ParentAddon, enSBO_LoadFormTypes.LogicOnly, "", FormUID)
+        '' _ParentAddon = ParentAddon
+        ''_oForm = _ParentAddon.SBO_Forms.Item(FormUID)
+
+        Initialize()
+
+    End Sub
+
+    Private Sub Initialize()
+        Dim oItem As SAPbouiCOM.Item
+        Dim oGrid As SAPbouiCOM.Grid
+
+        Try
+
+            If Me.Form.Type = f_PedidosCompras Then
+
+                ''oItem = Me.Form.Items.Add("bEnvPDFs", it_BUTTON)
+                ''oItem.DisplayDesc = True
+                ''oItem.Top = Me.Form.Items.Item("112").Top - oItem.Height - 5
+                ''oItem.Left = Me.Form.Items.Item("8").Left
+                ''oItem.Width = Me.Form.Items.Item("8").Width
+                ''oItem.LinkTo = "8"
+                ''oItem.AffectsFormMode = False
+                ''oItem.Specific.caption = "Envío Fact+Alb"
+
+                ''oItem = Me.Form.Items.Add("bCreaPDFs", it_BUTTON)
+                ''oItem.DisplayDesc = True
+                ''oItem.Top = Me.Form.Items.Item("bEnvPDFs").Top - oItem.Height - 2
+                ''oItem.Left = Me.Form.Items.Item("bEnvPDFs").Left
+                ''oItem.Width = Me.Form.Items.Item("bEnvPDFs").Width
+                ''oItem.LinkTo = "bEnvPDFs"
+                ''oItem.AffectsFormMode = False
+                ''oItem.Specific.caption = "Exportar Fact+Alb"
+
+            End If
+
+            If Me.Form.Type = f_SolicitudPedido Then
+
+                ''oItem = Me.Form.Items.Add("bOferta", it_BUTTON)
+                ''oItem.DisplayDesc = True
+                ''oItem.Top = Me.Form.Items.Item("2").Top
+                ''oItem.Left = Me.Form.Items.Item("2").Left + Me.Form.Items.Item("2").Width + 30
+                ''oItem.Width = 120
+                ''oItem.LinkTo = "2"
+                ''oItem.AffectsFormMode = False
+                ''oItem.Specific.caption = "Crear Oferta Venta"
+
+            End If
+
+
+        Catch ex As Exception
+            Me.SBO_Application.MessageBox(ex.Message)
+        Finally
+            LiberarObjCOM(oItem)
+            LiberarObjCOM(oGrid)
+        End Try
+
+    End Sub
+
+#Region "Variables"
+    Dim bClick As Boolean
+
+#End Region
+
+#Region "Funcions"
+
+    Public Sub ChooseFromList_BeforeAction(ByRef pVal As SAPbouiCOM.ChooseFromListEvent, ByRef BubbleEvent As Boolean, ByRef FormUID As String)
+        '
+        Dim oConditions As SAPbouiCOM.Conditions
+        Dim oCondition As SAPbouiCOM.Condition
+        '
+        If pVal.FormType = f_SolicitudCompras Or pVal.FormType = f_SolicitudPedido Or pVal.FormType = f_PedidosCompras _
+            Or pVal.FormType = f_EntradaMercanciasCompras Or pVal.FormType = f_DevolucionCompras _
+            Or pVal.FormType = f_FacturaCompras Or pVal.FormType = f_AbonoCompras Then
+
+            ''Select Case pVal.ChooseFromListUID
+            ''    Case Is = "6"
+            ''        oConditions = Nothing
+            ''        oConditions = New SAPbouiCOM.Conditions
+            ''        oCondition = Nothing
+            ''        oCondition = oConditions.Add
+            ''        With oCondition
+            ''            .BracketOpenNum = 1
+            ''            .BracketCloseNum = 1
+            ''            .Alias = "CardCode"
+            ''            .Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL
+            ''            .CondVal = Me.SBO_Application.Forms.Item(pVal.FormUID).Items.Item("4").Specific.String
+            ''        End With
+
+            ''        Me.Form.ChooseFromLists.Item(pVal.ChooseFromListUID).SetConditions(oConditions)
+
+            ''End Select
+
+        End If
+
+    End Sub
+
+
+#End Region
+
+#Region "Events"
+
+    Public Overrides Function HANDLE_DATA_EVENT(ByRef BusinessObjectInfo As SAPbouiCOM.BusinessObjectInfo, ByRef BubbleEvent As Boolean) As Integer
+
+
+    End Function
+
+    Public Overrides Sub HANDLE_FORM_EVENTS(ByVal FormUID As String, ByRef pVal As SAPbouiCOM.ItemEvent, ByRef BubbleEvent As Boolean)
+        Dim oMatrix As SAPbouiCOM.Matrix
+        Dim i As Integer
+        Dim sMsg As String
+        Try
+            If Trim(pVal.ItemUID) <> "" Then
+
+
+                If pVal.FormTypeEx = f_EntregaVentas Then
+                    If pVal.EventType = SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED And pVal.ItemUID = "1" And pVal.BeforeAction _
+                       And (pVal.FormMode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE Or pVal.FormMode = SAPbouiCOM.BoFormMode.fm_ADD_MODE) Then
+                        oMatrix = Me.m_SBO_Form.Items.Item("38").Specific
+
+                        For i = 1 To oMatrix.VisualRowCount
+                            If oMatrix.Columns.Item("U_SEIMAB_G").Cells.Item(i).Specific.String <> "" Then
+                                sMsg = "Mensaje en la línea del Artículo '" & oMatrix.Columns.Item("1").Cells.Item(i).Specific.String & "': " & Chr(13) & oMatrix.Columns.Item("U_SEIMAB_G").Cells.Item(i).Specific.String
+                                Me.SBO_Application.MessageBox(sMsg)
+                            End If
+                        Next
+                    End If
+                End If
+
+            Else
+                    '
+                    'Eventos de Formulario
+                    '
+                    Select Case pVal.EventType
+                    Case SAPbouiCOM.BoEventTypes.et_FORM_ACTIVATE
+                        '
+                    Case SAPbouiCOM.BoEventTypes.et_FORM_DEACTIVATE
+
+                    Case SAPbouiCOM.BoEventTypes.et_FORM_LOAD
+
+                    Case SAPbouiCOM.BoEventTypes.et_FORM_CLOSE
+
+                    Case SAPbouiCOM.BoEventTypes.et_FORM_RESIZE
+
+
+                End Select
+            End If
+
+        Catch ex As Exception
+            Me.SBO_Application.MessageBox("Error del gestor de eventos de formulario. Causa: " & Err.Description)
+        Finally
+            '' LiberarObjCOM(oItem)
+        End Try
+
+    End Sub
+
+    Public Overrides Sub HANDLE_MENU_EVENTS(ByRef pVal As SAPbouiCOM.MenuEvent, ByRef BubbleEvent As Boolean)
+
+    End Sub
+
+    Public Overrides Sub HANDLE_PRINT_EVENT(ByRef eventInfo As SAPbouiCOM.PrintEventInfo, ByRef BubbleEvent As Boolean)
+
+    End Sub
+
+    Public Overrides Sub HANDLE_REPORT_DATA_EVENT(ByRef eventInfo As SAPbouiCOM.ReportDataInfo, ByRef BubbleEvent As Boolean)
+
+    End Sub
+
+    Public Overrides Function ModalFormEventAllowed(ByRef pVal As SAPbouiCOM.MenuEvent) As Boolean
+
+    End Function
+
+    Public Overrides Sub HANDLE_RIGHT_CLICK_EVENTS(ByRef eventInfo As SAPbouiCOM.ContextMenuInfo, ByRef BubbleEvent As Boolean)
+
+    End Sub
+
+#End Region
+End Class

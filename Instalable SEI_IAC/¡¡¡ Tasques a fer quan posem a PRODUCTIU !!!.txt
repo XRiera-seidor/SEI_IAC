@@ -1,0 +1,18 @@
+* Crear la consulta "GESTION/Detall MOVIMENT" al Query Manager:
+-----------------------------------------------------------------------------------------
+/* SELECT T0.* FROM dbo.RDR1 T0 WHERE T0.U_SEI_Id_G=[%0] */
+Select m.* 
+From [SAP_GESTION_TEST].dbo.MOVIMENTS m  
+Where m.ID=[%0]
+-----------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
