@@ -6,6 +6,7 @@ From [SAP_GESTION_TEST].dbo.MOVIMENTS m
 Where m.ID=[%0]
 -----------------------------------------------------------------------------------------
 
+* Posar les queries del Transaction Notification
 
 
 
