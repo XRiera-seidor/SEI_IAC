@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<AddOnRegData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" SlientInstallation="" SlientUpgrade="" Partnernmsp="SEI" SchemaVersion="3.0" Type="" MultipleVersion="false" OnDemand="" OnPremise="" ExtName="SEI_IAC" ExtVersion="102" Contdata="" Partner="SEIDOR" DBType="MSSQL">
+<AddOnRegData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" SlientInstallation="" SlientUpgrade="" Partnernmsp="SEI" SchemaVersion="3.0" Type="" MultipleVersion="false" OnDemand="" OnPremise="" ExtName="SEI_IAC" ExtVersion="103" Contdata="" Partner="SEIDOR" DBType="MSSQL">
   <Validity>
     <SBOCompatibility>
       <Version From="" To="" />
@@ -38,12 +38,26 @@
           </Files>
         </Uninstallation>
       </x86>
-      <x64 AddonExe="" AddonSig="">
+      <x64 AddonExe="C:\SEIDOR\FONTS\SEI_IAC\Instalable SEI_IAC\SEI_IAC.exe" AddonSig="">
         <Installation>
-          <Files />
+          <Files>
+            <File FileName="SEI_IAC.exe">
+              <Actions />
+            </File>
+            <File FileName="Formularios_srf\SEI_Errors_GESTION.srf">
+              <Actions />
+            </File>
+          </Files>
         </Installation>
         <Uninstallation>
-          <Files />
+          <Files>
+            <File FileName="SEI_IAC.exe">
+              <Actions />
+            </File>
+            <File FileName="Formularios_srf\SEI_Errors_GESTION.srf">
+              <Actions />
+            </File>
+          </Files>
         </Uninstallation>
       </x64>
     </Addon>
